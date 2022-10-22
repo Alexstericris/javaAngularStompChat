@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -12,6 +12,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class AuthService {
+  isLoggedIn = new EventEmitter<boolean>();
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {

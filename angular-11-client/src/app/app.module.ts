@@ -12,8 +12,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardUserComponent } from './board-user/board-user.component';
+import {ChatComponent} from './chat/chat.component';
 
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
+// import {DateHelper} from './_helpers/date.helper';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { authInterceptorProviders } from './_helpers/auth.interceptor';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
+    ChatComponent,
     ProfileComponent,
     BoardAdminComponent,
     BoardModeratorComponent,
@@ -32,7 +35,10 @@ import { authInterceptorProviders } from './_helpers/auth.interceptor';
     FormsModule,
     HttpClientModule
   ],
-  providers: [authInterceptorProviders],
+  providers: [
+    authInterceptorProviders,
+    // DateHelper
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

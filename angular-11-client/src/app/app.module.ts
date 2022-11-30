@@ -15,6 +15,7 @@ import { BoardUserComponent } from './board-user/board-user.component';
 import {ChatComponent} from './chat/chat.component';
 
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
+import {WebsocketService} from "./_services/websocket.service";
 // import {DateHelper} from './_helpers/date.helper';
 
 @NgModule({
@@ -37,6 +38,7 @@ import { authInterceptorProviders } from './_helpers/auth.interceptor';
   ],
   providers: [
     authInterceptorProviders,
+    WebsocketService
     // DateHelper
   ],
   bootstrap: [AppComponent]

@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {User} from '../app.types';
-
-const API_TEST_URL = 'http://localhost:8080/api/test/';
-const API_URL = 'http://localhost:8080/api/';
+import {API_TEST_URL, API_URL} from './constants';
 
 @Injectable({
   providedIn: 'root'
@@ -47,4 +45,7 @@ export class UserService {
     });
   }
 
+  getUsers(): Observable<any> {
+    return this.http.get(API_URL + 'users');
+  }
 }

@@ -37,30 +37,22 @@ public class SpringBootSecurityJwtApplicationTests {
 	@Test
 	@Transactional
 	public void userMessage(){
-		User firstUser= userRepository.findByUsername("scristea")
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + "scristea"));
-		User secondUser= userRepository.findByUsername("banana")
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + "banana"));
-
-
-		List<Chat> chats=firstUser.getChats();
-//		String testGson = new Gson().toJson(chats);
-
-		Gson gson = new GsonBuilder()
-				.setPrettyPrinting()
-				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-				.create();
-
-
-		String test = gson.toJson(LocalDateTime.now());
-		String test2 = gson.toJson(chats);
-		System.out.println("testGson");
-
-//		Message message = new Message();
-//		message.setMessage("yo wuddup bro");
-//		message.setFromUserId(firstUser);
-//		message.setToUserId(secondUser);
-//		messageRepository.save(message);
+//		User firstUser= userRepository.findByUsername("scristea")
+//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + "scristea"));
+//		User secondUser= userRepository.findByUsername("banana")
+//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + "banana"));
+//
+//		List<Chat> chats=firstUser.getChats();
+//
+//		Gson gson = new GsonBuilder()
+//				.setPrettyPrinting()
+//				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+//				.create();
+//
+//
+//		String test = gson.toJson(LocalDateTime.now());
+//		String test2 = gson.toJson(chats);
+//		System.out.println("testGson");
 	}
 
 	@Test

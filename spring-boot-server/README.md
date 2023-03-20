@@ -96,6 +96,10 @@ bezkoder.app.jwtExpirationMs= 86400000
 ```
 mvn spring-boot:run
 ```
+if problems occur try 
+```
+mvn org.springframework.boot:spring-boot-maven-plugin:run
+```
 
 ## Run following SQL insert statements
 ```

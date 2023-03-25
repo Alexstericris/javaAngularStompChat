@@ -18,5 +18,8 @@ export type Chat = {
   name: string,
   from_user_id: number,
   users: Array<number>,
-  messages: Array<Message>
+  messages: Array<Message>,
+  createdAt: string,
+  updatedAt: string,
 };
+

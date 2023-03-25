@@ -1,5 +1,9 @@
 package com.bezkoder.springjwt.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,9 +55,15 @@ public class User {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "users_chats",
 			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "chat_id"))
+			inverseJoinColumns = @JoinColumn(name = "chat_id"),
+			uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "chat_id"})})
 	private List<Chat> belongsToChats = new ArrayList<>();
 
+	@CreationTimestamp
+	private LocalDateTime createdAt;
+
+	@UpdateTimestamp
+	private LocalDateTime updatedAt;
 
 	public User() {
 	}
@@ -62,6 +72,8 @@ public class User {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Long getId() {

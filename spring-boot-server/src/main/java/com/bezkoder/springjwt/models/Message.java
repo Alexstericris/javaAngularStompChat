@@ -16,12 +16,12 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="from_user_id")
     @NotNull
     private Long from_user_id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="chat_id")
     @NotNull
     private Long chat_id;
@@ -50,6 +50,18 @@ public class Message {
         this.message = message;
     }
 
+    public Message() {
+    }
+
+    public Message(Long chat_id,
+                   Long from_user_id,
+                   String message) {
+        this.chat_id = chat_id;
+        this.from_user_id = from_user_id;
+        this.message = message;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 //    public LocalDateTime getCreateAt() {
 //        return createAt;
 //    }

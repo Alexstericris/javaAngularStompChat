@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chat, Message, User} from '../app.types';
 import {UserService} from '../_services/user.service';
 import {TokenStorageService} from '../_services/token-storage.service';
 import {DateHelper} from '../_helpers/date.helper';
 import {ChatService} from '../_services/chat.service';
+import {WebSocketService} from '../_services/web-socket.service';
+import {Message as StompMessage} from '@stomp/stompjs';
 
 @Component({
   selector: 'app-chat',
@@ -11,7 +13,9 @@ import {ChatService} from '../_services/chat.service';
   providers: [DateHelper]
 })
 
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
+  private webSocketService: WebSocketService;
+
   chats: Array<Chat> = [];
   allUsers: Array<User> = [];
   chattingUsers: Array<User> = [];
@@ -21,11 +25,18 @@ export class ChatComponent implements OnInit {
   constructor(private userService: UserService,
               private tokenStorage: TokenStorageService,
               private chatService: ChatService,
-              public dateHelper: DateHelper) {
+              public dateHelper: DateHelper,
+              webSocketService: WebSocketService) {
+    this.webSocketService = webSocketService;
   }
 
   ngOnInit(): void {
     this.user = this.tokenStorage.getUser();
+
+    this.webSocketService.connect();
+    this.webSocketService.subscribe('/topic/messages', (message: StompMessage) => {
+      console.log(`Received message: ${message.body}`);
+    });
     if (this.user) {
       this.userService.getUserChats(this.user.id).subscribe(response => {
           this.chats = response;
@@ -83,5 +94,13 @@ export class ChatComponent implements OnInit {
         console.log('posted');
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketService.disconnect();
+  }
+
+  sendMessage(): void {
+    this.webSocketService.send('/app/send-message', 'Hello, World!');
   }
 }

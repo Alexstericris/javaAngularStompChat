@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Chat, Message, User} from '../app.types';
 import {UserService} from '../_services/user.service';
-import {TokenStorageService} from '../_services/token-storage.service';
+import {AuthStorageService} from '../_services/auth-storage.service';
 import {DateHelper} from '../_helpers/date.helper';
 import {ChatService} from '../_services/chat.service';
 import {WebsocketService} from '../_services/websocket.service';
@@ -23,7 +23,7 @@ export class ChatComponent implements OnInit {
   channel = '/chatting/channel';
 
   constructor(private userService: UserService,
-              private tokenStorage: TokenStorageService,
+              private tokenStorage: AuthStorageService,
               private chatService: ChatService,
               private websocketService: WebsocketService,
               public dateHelper: DateHelper) {

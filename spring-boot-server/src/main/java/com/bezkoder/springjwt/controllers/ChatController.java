@@ -68,7 +68,7 @@ public class ChatController {
             User withUser = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Error: User not found."));
             Chat newChat = new Chat(fromUser.getId(), username);
-            newChat.setUsers(List.of(fromUser, withUser));
+//            newChat.setUsers(List.of(fromUser, withUser));
             chatRepository.save(newChat);
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()

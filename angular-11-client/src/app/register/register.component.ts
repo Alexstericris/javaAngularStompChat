@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../_services/auth.service';
-import {TokenStorageService} from "../_services/token-storage.service";
+import {AuthStorageService} from "../_services/auth-storage.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   errorMessage = '';
   roles: string[] = [];
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private router: Router) {
+  constructor(private authService: AuthService, private tokenStorage: AuthStorageService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
 
     this.authService.register(username, email, password).subscribe(
       data => {
-        this.tokenStorage.saveToken(data.accessToken);
+        this.tokenStorage.login(data.accessToken);
         this.tokenStorage.saveUser(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;

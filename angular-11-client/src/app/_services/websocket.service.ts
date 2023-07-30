@@ -1,7 +1,7 @@
 import * as SockJs from 'sockjs-client';
 import {Injectable} from '@angular/core';
 import {Client, Message, over, Subscription} from 'stompjs';
-import {TokenStorageService} from './token-storage.service';
+import {AuthStorageService} from './auth-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class WebsocketService {
   wsSubscription?: Subscription;
   receivedMessages = '';
 
-  constructor(private tokenStorageService: TokenStorageService) {
+  constructor(private tokenStorageService: AuthStorageService) {
   }
 
   initSocket(url: string): void {
@@ -26,11 +26,11 @@ export class WebsocketService {
   connect(url: string, callback: (frame: any) => void): void {
     this.disconnect();
     this.initSocket(url);
-    const headers = {
-      Authorization: 'Bearer ' + this.tokenStorageService.getToken()
-    };
-    console.log('Try to connect.');
-    return this.stompClient?.connect(headers, callback);
+    // const headers = {
+    //   Authorization: 'Bearer ' + this.tokenStorageService.getToken()
+    // };
+    // console.log('Try to connect.');
+    // return this.stompClient?.connect(headers, callback);
   }
 
   disconnect(): void {

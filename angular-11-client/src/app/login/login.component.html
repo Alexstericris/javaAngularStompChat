@@ -20,14 +20,14 @@
           name="email"
           [(ngModel)]="form.email"
           required
-          #username="ngModel"
+          #email="ngModel"
         />
         <div
           class="alert alert-danger"
           role="alert"
-          *ngIf="username.errors && f.submitted"
+          *ngIf="email.errors && f.submitted"
         >
-          Username is required!
+          Email is required!
         </div>
       </div>
       <div class="form-group">

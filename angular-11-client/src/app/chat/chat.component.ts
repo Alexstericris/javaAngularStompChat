@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Chat, Message, User} from '../app.types';
+import {Chat, Message, Nullable, User, UserChat} from '../app.types';
 import {UserService} from '../_services/user.service';
-import {AuthStorageService} from '../_services/auth-storage.service';
+import {TokenStorageService} from '../_services/token-storage.service';
 import {DateHelper} from '../_helpers/date.helper';
 import {ChatService} from '../_services/chat.service';
 import {WebsocketService} from '../_services/websocket.service';
@@ -13,7 +13,7 @@ import {WebsocketService} from '../_services/websocket.service';
 })
 
 export class ChatComponent implements OnInit {
-  chats: Array<Chat> = [];
+  userChats: Array<UserChat> = [];
   allUsers: Array<User> = [];
   chattingUsers: Array<User> = [];
   activeChat: number | null = null;
@@ -23,27 +23,17 @@ export class ChatComponent implements OnInit {
   channel = '/chatting/channel';
 
   constructor(private userService: UserService,
-              private tokenStorage: AuthStorageService,
+              private tokenStorage: TokenStorageService,
               private chatService: ChatService,
               private websocketService: WebsocketService,
               public dateHelper: DateHelper) {
   }
 
-  ngOnInit(): void {
-    this.websocketService.connect('http://localhost:8080/ws', (frame) => {
-      this.connected = true;
-      this.websocketService.subscribe(this.channel, (message) => {
-        console.log(message);
-      });
-      this.websocketService.send('/chat/message', 'bruh');
-    });
+  async ngOnInit(): Promise<void> {
     this.user = this.tokenStorage.getUser();
     if (this.user) {
-      this.userService.getUserChats(this.user.id).subscribe(response => {
-          this.chats = response;
-          if (this.chats.length) {
-            this.activeChat = 0;
-          }
+      await this.userService.getUserChats(this.user.id).subscribe(response => {
+          this.userChats = response;
         },
         err => {
           console.log(err);
@@ -54,45 +44,68 @@ export class ChatComponent implements OnInit {
         err => {
           console.log(err);
         });
-      this.userService.getChattingUsers(this.user.id).subscribe(response => {
-          this.chattingUsers = response;
-        },
-        err => {
-          console.log(err);
-        });
+      this.websocketService.connect('/ws', (frame) => {
+        this.connected = true;
+        this.selectChat(0);
+      });
     }
   }
 
   startNewChat($event: Event): void {
-    console.log(($event.target as HTMLInputElement).value);
-    this.chatService.startNewChat(($event.target as HTMLInputElement).value).subscribe(response => {
-        console.log('new chat added');
-      },
-      err => {
-        console.log(err);
-      });
+    if (!this.user) {
+      console.log("user is null")
+      return
+    }
+    let withUserEmail=($event.target as HTMLInputElement).value
+    let chatWithUser: Nullable<User> = null;
+
+    this.allUsers.forEach((user: User)=>{
+      if (user.email===withUserEmail) {
+        chatWithUser=user
+      }
+    })
+    if (chatWithUser===null) {
+      console.log("with user is null")
+      return;
+    }else{
+      this.chatService.startNewChat(this.user.id,chatWithUser.id,chatWithUser.name).subscribe(data => {
+        this.userChats.push(data)
+          console.log('new chat added');
+        },
+        err => {
+          console.log(err);
+        })
+    }
   }
 
   getChatDate(chat: Chat): string {
     if (chat.messages.length) {
-      return this.dateHelper.format(chat.messages.slice(-1)[0].createdAt, {
-        month: 'short',
-        day: 'numeric'
-      });
+      return this.dateHelper.formatArr(chat.messages.slice(-1)[0].createdAt);
     } else {
-      return this.dateHelper.format(chat.createdAt, {
-        month: 'short',
-        day: 'numeric'
-      });
+      return this.dateHelper.formatArr(chat.createdAt);
     }
   }
 
   submitMessage(event: Event): void {
     event.preventDefault();
     const message: string | null = (event.target as HTMLFormElement).message.value;
+
+    this.websocketService.send('/app/message', {fromUserId:this.user?.id,message});
     if (this.activeChat !== null && message) {
-      this.chatService.postMessage(this.chats[this.activeChat].id, message).subscribe(response => {
+      // this.userChats[this.activeChat]?.chat.messages.push(JSON.parse(message.body));
+      this.chatService.postMessage(this.userChats[this.activeChat].chat.id, message).subscribe(response => {
         console.log('posted');
+      });
+    }
+  }
+
+  selectChat(index:number) {
+    this.activeChat=index;
+    if (this.userChats.length) {
+      this.websocketService.subscribe(this.channel, (message) => {
+        if (this.activeChat !== null) {
+          this.userChats[this.activeChat]?.chat.messages.push(JSON.parse(message.body));
+        }
       });
     }
   }

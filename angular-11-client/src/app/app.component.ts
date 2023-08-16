@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthStorageService} from './_services/auth-storage.service';
+import {TokenStorageService} from './_services/token-storage.service';
 import {AuthService} from './_services/auth.service';
 import {WebsocketService} from "./_services/websocket.service";
 
@@ -15,16 +15,17 @@ export class AppComponent implements OnInit {
   showModeratorBoard = false;
   username?: string;
 
-  constructor(private authService: AuthService, private tokenStorageService: AuthStorageService) {
+  constructor(private authService: AuthService, private tokenStorageService: TokenStorageService) {
   }
 
   ngOnInit(): void {
-    this.isLoggedIn = JSON.parse(localStorage.isLoggedIn);
+    this.isLoggedIn = !!this.tokenStorageService.getToken();
     this.authService.isLoggedIn.subscribe((isLoggedIn: boolean) => {
       this.isLoggedIn = isLoggedIn;
     });
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
+      this.roles = user.roles;
 
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
       this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
@@ -34,7 +35,7 @@ export class AppComponent implements OnInit {
   }
 
   logout(): void {
-    this.tokenStorageService.logout();
+    this.tokenStorageService.signOut();
     window.location.reload();
   }
 

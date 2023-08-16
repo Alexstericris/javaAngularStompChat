@@ -1,7 +1,7 @@
 import * as SockJs from 'sockjs-client';
 import {Injectable} from '@angular/core';
 import {Client, Message, over, Subscription} from 'stompjs';
-import {AuthStorageService} from './auth-storage.service';
+import {TokenStorageService} from './token-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,12 @@ export class WebsocketService {
   wsSubscription?: Subscription;
   receivedMessages = '';
 
-  constructor(private tokenStorageService: AuthStorageService) {
+  constructor(private tokenStorageService: TokenStorageService) {
   }
 
   initSocket(url: string): void {
     console.log('Initialize WebSocket Connection');
-    const ws = new SockJs(url);
+    const ws = new SockJs(this.websocketEndpoint);
     this.stompClient = over(ws);
     // this.stompClient=this.configureStompClient()
 
@@ -26,11 +26,11 @@ export class WebsocketService {
   connect(url: string, callback: (frame: any) => void): void {
     this.disconnect();
     this.initSocket(url);
-    // const headers = {
-    //   Authorization: 'Bearer ' + this.tokenStorageService.getToken()
-    // };
-    // console.log('Try to connect.');
-    // return this.stompClient?.connect(headers, callback);
+    const headers = {
+      Authorization: 'Bearer ' + this.tokenStorageService.getToken()
+    };
+    console.log('Try to connect.');
+    return this.stompClient?.connect(headers, callback);
   }
 
   disconnect(): void {
@@ -46,8 +46,7 @@ export class WebsocketService {
     this.wsSubscription = this.stompClient?.subscribe(channel, callback);
   }
 
-  send(to: any, message: any): void {
-    console.log('sending message');
-    this.stompClient?.send(to, {}, JSON.stringify(message));
+  send(to: any, message: any):any {
+    return this.stompClient?.send(to, {}, JSON.stringify(message));
   }
 }

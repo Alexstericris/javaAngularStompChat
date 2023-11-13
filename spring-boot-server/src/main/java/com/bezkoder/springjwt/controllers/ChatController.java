@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +68,7 @@ public class ChatController {
             User withUser = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Error: User not found."));
             Chat newChat = new Chat(fromUser.getId(), username);
-            newChat.setUsers(List.of(fromUser, withUser));
+//            newChat.setUsers(List.of(fromUser, withUser));
             chatRepository.save(newChat);
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
@@ -79,4 +81,10 @@ public class ChatController {
 
     }
 
+
+    @MessageMapping("/message")
+    @SendTo("/chatting/channel")
+    public String onMessage(String message) {
+        return message;
+    }
 }

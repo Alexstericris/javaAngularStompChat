@@ -28,9 +28,11 @@
                    list="usersList">
             <datalist id="usersList" role="listbox" *ngIf="allUsers && allUsers.length">
               <option *ngFor="let user of allUsers;"
-                      [value]="user.username">
+                      [value]="user.email">
+              </option>
             </datalist>
-            <a *ngFor="let chat of chats; let i = index;"
+            <a *ngFor="let userChat of userChats; let i = index;"
+               (click)="selectChat(i)"
                [ngClass]="i===activeChat?'active text-white':'text-black list-group-item-light'"
                class="list-group-item list-group-item-action rounded-0">
               <div class="media">
@@ -39,12 +41,12 @@
                 </span>
                 <div class="media-body ml-4">
                   <div class="d-flex align-items-center justify-content-between mb-1">
-                    <h6 class="mb-0">{{chat.name}}</h6>
+                    <h6 class="mb-0">{{userChat.chat.name}}</h6>
                     <small class="small font-weight-bold">
-                      {{getChatDate(chat)}}
+                      {{getChatDate(userChat.chat)}}
                     </small>
                   </div>
-                  <p class="font-italic mb-0 text-small">{{chat.messages.slice(-1)[0]?.message}}</p>
+                  <p class="font-italic mb-0 text-small">{{userChat.chat.messages.slice(-1)[0]?.message}}</p>
                 </div>
               </div>
             </a>
@@ -56,17 +58,14 @@
     <div class="col-7 px-0">
       <div class="px-4 py-5 chat-box bg-white">
         <ng-container *ngIf="activeChat!==null">
-          <ng-container *ngFor="let message of chats[activeChat].messages; let i = index;">
+          <ng-container *ngFor="let message of userChats[activeChat].chat.messages; let i = index;">
             <div *ngIf="user&&message.from_user_id!==user.id" class="media d-flex flex-row mb-3">
               <!--          <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">-->
               <div class="media-body w-75">
                 <div class="bg-light rounded py-2 px-3 mb-2">
                   <p class="text-small mb-0 text-muted">{{message.message}}</p>
                 </div>
-                <p class="small text-muted">{{dateHelper.format(message.createdAt, {
-                  month: 'short',
-                  day: 'numeric'
-                })}}</p>
+                <p class="small text-muted">{{dateHelper.formatArr(message.createdAt)}}</p>
               </div>
             </div>
 
@@ -76,10 +75,7 @@
                 <div class="bg-primary rounded py-2 px-3 mb-2">
                   <p class="text-small mb-0 text-white">{{message.message}}</p>
                 </div>
-                <p class="small text-muted">{{dateHelper.format(message.createdAt, {
-                  month: 'short',
-                  day: 'numeric'
-                })}}</p>
+                <p class="small text-muted">{{dateHelper.formatArr(message.createdAt)}}</p>
               </div>
             </div>
           </ng-container>

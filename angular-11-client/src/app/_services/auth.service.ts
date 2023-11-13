@@ -1,11 +1,12 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {AUTH_API} from './constants';
+import {API_URL, AUTH_API} from './constants';
 
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  // observe: 'response',
 };
 
 @Injectable({
@@ -15,16 +16,16 @@ export class AuthService {
   isLoggedIn = new EventEmitter<boolean>();
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(AUTH_API + 'signin', {
-      username,
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(AUTH_API + 'login', {
+      email,
       password
     }, httpOptions);
   }
 
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(AUTH_API + 'signup', {
-      username,
+  register(name: string, email: string, password: string): Observable<any> {
+    return this.http.post(AUTH_API + 'register', {
+      name,
       email,
       password
     }, httpOptions);

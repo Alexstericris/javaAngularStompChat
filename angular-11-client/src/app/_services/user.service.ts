@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {User} from '../app.types';
-import {API_TEST_URL, API_URL} from './constants';
+import {API_TEST_URL, API_URL, AUTH_URL} from './constants';
 
 @Injectable({
   providedIn: 'root'
@@ -34,18 +34,18 @@ export class UserService {
   }
 
   getUserChats(userId: number): Observable<any> {
-    return this.http.get(API_URL + 'user/chats', {
+    return this.http.get(AUTH_URL + 'chats', {
       params: new HttpParams().append('userId', String(userId))
     });
   }
 
   getChattingUsers(userId: number): Observable<any> {
-    return this.http.get(API_URL + 'user/chats/users', {
+    return this.http.get(AUTH_URL + 'chats/users', {
       params: new HttpParams().append('userId', String(userId))
     });
   }
 
   getUsers(): Observable<any> {
-    return this.http.get(API_URL + 'users');
+    return this.http.get(AUTH_URL + 'users');
   }
 }

@@ -1,14 +1,21 @@
 ## Angular 11, Spring Boot, Postgresql, SockJs/Stomp Stack
 
-This project is solely for learning purposes.
+This project is solely for learning purposes. I tried both Kotlin and Java
 
-## Set up
+## Set up (OLD)
 
 Set database up and configure in **application.properties**
 
 Start spring boot server: ```mvn string-boot:run```
 
+or use Kotlin Server with docker
+
 Start client server: ```ng serve <--port>```
+
+## Set up Docker
+
+just use ```docker-compose up```. Make sure your ports are free.
+
 
 ## Chat
 
